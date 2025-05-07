@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensor Data Dashboard</title>
+    <title>AGROSPHERE - Sensor Data Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -83,7 +83,7 @@
     <div class="container">
         <!-- Left side: Real-time mini line charts -->
         <div class="left-side">
-            <h3>Real-Time Mini Line Charts</h3>
+            <h3>AGROSPHERE - Real-Time Mini Line Charts</h3>
             <div class="chart-container">
                 <h4>Soil Moisture</h4>
                 <canvas id="soilMoistureChart"></canvas>
@@ -221,14 +221,14 @@
                 const data = await response.json();
                 if (data.feeds && data.feeds.length > 0) {
                     const latest = data.feeds[0];
-                    document.getElementById('soilMoistureValue').textContent = `${parseFloat(latest.field1).toFixed(2)} %`;
-                    document.getElementById('temperatureValue').textContent = `${parseFloat(latest.field2).toFixed(2)} °C`;
-                    document.getElementById('humidityValue').textContent = `${parseFloat(latest.field3).toFixed(2)} %`;
-                    document.getElementById('rainfallValue').textContent = `${parseFloat(latest.field4).toFixed(2)} mm`;
+                    document.getElementById('soilMoistureValue').textContent = `${parseFloat(latest.field4).toFixed(2)} %`;
+                    document.getElementById('temperatureValue').textContent = `${parseFloat(latest.field1).toFixed(2)} °C`;
+                    document.getElementById('humidityValue').textContent = `${parseFloat(latest.field2).toFixed(2)} %`;
+                    document.getElementById('rainfallValue').textContent = `${parseFloat(latest.field8).toFixed(2)} mm`;
                     document.getElementById('nitrogenValue').textContent = `${parseFloat(latest.field5).toFixed(2)} mg/L`;
                     document.getElementById('phosphorusValue').textContent = `${parseFloat(latest.field6).toFixed(2)} mg/L`;
                     document.getElementById('potassiumValue').textContent = `${parseFloat(latest.field7).toFixed(2)} mg/L`;
-                    document.getElementById('lightValue').textContent = `${parseFloat(latest.field8).toFixed(2)} lux`;
+                    document.getElementById('lightValue').textContent = `${parseFloat(latest.field3).toFixed(2)} lux`;
                 }
             } catch (error) {
                 console.error('Error fetching current data:', error);
@@ -242,14 +242,14 @@
                 if (data.feeds && data.feeds.length > 0) {
                     const feeds = data.feeds;
                     const timestamps = feeds.map(feed => new Date(feed.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
-                    updateChart(soilMoistureChart, timestamps, feeds.map(feed => parseFloat(feed.field1)));
-                    updateChart(temperatureChart, timestamps, feeds.map(feed => parseFloat(feed.field2)));
-                    updateChart(humidityChart, timestamps, feeds.map(feed => parseFloat(feed.field3)));
-                    updateChart(rainfallChart, timestamps, feeds.map(feed => parseFloat(feed.field4)));
+                    updateChart(soilMoistureChart, timestamps, feeds.map(feed => parseFloat(feed.field4)));
+                    updateChart(temperatureChart, timestamps, feeds.map(feed => parseFloat(feed.field1)));
+                    updateChart(humidityChart, timestamps, feeds.map(feed => parseFloat(feed.field2)));
+                    updateChart(rainfallChart, timestamps, feeds.map(feed => parseFloat(feed.field8)));
                     updateChart(nitrogenChart, timestamps, feeds.map(feed => parseFloat(feed.field5)));
                     updateChart(phosphorusChart, timestamps, feeds.map(feed => parseFloat(feed.field6)));
                     updateChart(potassiumChart, timestamps, feeds.map(feed => parseFloat(feed.field7)));
-                    updateChart(lightChart, timestamps, feeds.map(feed => parseFloat(feed.field8)));
+                    updateChart(lightChart, timestamps, feeds.map(feed => parseFloat(feed.field3)));
                 }
             } catch (error) {
                 console.error('Error fetching historical data:', error);
