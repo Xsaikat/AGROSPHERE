@@ -96,7 +96,7 @@ def set_background():
         border-radius: 10px;
         margin: 20px auto;
         max-width: 800px;
-        color: white; /* Ensure text remains white */
+        color:rgba(0, 0, 0, 0.5); /* Ensure text remains white */
     }
 
     .stApp::before {
