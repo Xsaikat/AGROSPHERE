@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Data Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .left-side {
+            width: 70%;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            border-right: 2px solid #ddd;
+        }
+
+        .right-side {
+            width: 30%;
+            padding: 20px;
+            background-color: #ffffff;
+            overflow-y: auto;
+        }
+
+        .sensor-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-align: center;
+            background-color: #f9f9f9;
+            font-size: 1.2em;
+        }
+
+        .sensor-box h4 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .sensor-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .chart-container {
+            margin-bottom: 30px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Left side: Real-time mini line charts -->
+        <div class="left-side">
+            <h3>Real-Time Mini Line Charts</h3>
+            <div class="chart-container">
+                <h4>Soil Moisture</h4>
+                <canvas id="soilMoistureChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4>Temperature</h4>
+                <canvas id="temperatureChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4>Humidity</h4>
+                <canvas id="humidityChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4>Rainfall</h4>
+                <canvas id="rainfallChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4>Nitrogen</h4>
+                <canvas id="nitrogenChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4>Phosphorus</h4>
+                <canvas id="phosphorusChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4>Potassium</h4>
+                <canvas id="potassiumChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4>Light</h4>
+                <canvas id="lightChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Right side: Current sensor values -->
+        <div class="right-side">
+            <div class="sensor-box">
+                <h4>Soil Moisture</h4>
+                <div class="sensor-value" id="soilMoistureValue">Loading...</div>
+            </div>
+            <div class="sensor-box">
+                <h4>Temperature</h4>
+                <div class="sensor-value" id="temperatureValue">Loading...</div>
+            </div>
+            <div class="sensor-box">
+                <h4>Humidity</h4>
+                <div class="sensor-value" id="humidityValue">Loading...</div>
+            </div>
+            <div class="sensor-box">
+                <h4>Rainfall</h4>
+                <div class="sensor-value" id="rainfallValue">Loading...</div>
+            </div>
+            <div class="sensor-box">
+                <h4>Nitrogen</h4>
+                <div class="sensor-value" id="nitrogenValue">Loading...</div>
+            </div>
+            <div class="sensor-box">
+                <h4>Phosphorus</h4>
+                <div class="sensor-value" id="phosphorusValue">Loading...</div>
+            </div>
+            <div class="sensor-box">
+                <h4>Potassium</h4>
+                <div class="sensor-value" id="potassiumValue">Loading...</div>
+            </div>
+            <div class="sensor-box">
+                <h4>Light</h4>
+                <div class="sensor-value" id="lightValue">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CHANNEL_ID = '2749013';  // Your ThingSpeak Channel ID
+        const READ_API_KEY = '651TK5QM17DNP9FA';  // Your ThingSpeak Read API Key
+
+        const currentUrl = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${READ_API_KEY}&results=1`;
+        const historyUrl = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${READ_API_KEY}&results=50`;
+
+        let soilMoistureChart, temperatureChart, humidityChart, rainfallChart, nitrogenChart, phosphorusChart, potassiumChart, lightChart;
+
+        const chartOptions = {
+            responsive: true,
+            scales: {
+                x: { type: 'category' },
+                y: { beginAtZero: true }
+            }
+        };
+
+        function initCharts() {
+            soilMoistureChart = new Chart(document.getElementById('soilMoistureChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Soil Moisture', data: [], borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 2, fill: false }] },
+                options: chartOptions
+            });
+            temperatureChart = new Chart(document.getElementById('temperatureChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Temperature', data: [], borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 2, fill: false }] },
+                options: chartOptions
+            });
+            humidityChart = new Chart(document.getElementById('humidityChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Humidity', data: [], borderColor: 'rgba(153, 102, 255, 1)', borderWidth: 2, fill: false }] },
+                options: chartOptions
+            });
+            rainfallChart = new Chart(document.getElementById('rainfallChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Rainfall', data: [], borderColor: 'rgba(255, 159, 64, 1)', borderWidth: 2, fill: false }] },
+                options: chartOptions
+            });
+            nitrogenChart = new Chart(document.getElementById('nitrogenChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Nitrogen', data: [], borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 2, fill: false }] },
+                options: chartOptions
+            });
+            phosphorusChart = new Chart(document.getElementById('phosphorusChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Phosphorus', data: [], borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 2, fill: false }] },
+                options: chartOptions
+            });
+            potassiumChart = new Chart(document.getElementById('potassiumChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Potassium', data: [], borderColor: 'rgba(153, 102, 255, 1)', borderWidth: 2, fill: false }] },
+                options: chartOptions
+            });
+            lightChart = new Chart(document.getElementById('lightChart'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Light', data: [], borderColor: 'rgba(255, 206, 86, 1)', borderWidth: 2, fill: false }] },
+                options: chartOptions
+            });
+        }
+
+        async function fetchCurrentData() {
+            try {
+                const response = await fetch(currentUrl);
+                const data = await response.json();
+                if (data.feeds && data.feeds.length > 0) {
+                    const latest = data.feeds[0];
+                    document.getElementById('soilMoistureValue').textContent = `${parseFloat(latest.field1).toFixed(2)} %`;
+                    document.getElementById('temperatureValue').textContent = `${parseFloat(latest.field2).toFixed(2)} °C`;
+                    document.getElementById('humidityValue').textContent = `${parseFloat(latest.field3).toFixed(2)} %`;
+                    document.getElementById('rainfallValue').textContent = `${parseFloat(latest.field4).toFixed(2)} mm`;
+                    document.getElementById('nitrogenValue').textContent = `${parseFloat(latest.field5).toFixed(2)} mg/L`;
+                    document.getElementById('phosphorusValue').textContent = `${parseFloat(latest.field6).toFixed(2)} mg/L`;
+                    document.getElementById('potassiumValue').textContent = `${parseFloat(latest.field7).toFixed(2)} mg/L`;
+                    document.getElementById('lightValue').textContent = `${parseFloat(latest.field8).toFixed(2)} lux`;
+                }
+            } catch (error) {
+                console.error('Error fetching current data:', error);
+            }
+        }
+
+        async function fetchHistoricalData() {
+            try {
+                const response = await fetch(historyUrl);
+                const data = await response.json();
+                if (data.feeds && data.feeds.length > 0) {
+                    const feeds = data.feeds;
+                    const timestamps = feeds.map(feed => new Date(feed.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+                    updateChart(soilMoistureChart, timestamps, feeds.map(feed => parseFloat(feed.field1)));
+                    updateChart(temperatureChart, timestamps, feeds.map(feed => parseFloat(feed.field2)));
+                    updateChart(humidityChart, timestamps, feeds.map(feed => parseFloat(feed.field3)));
+                    updateChart(rainfallChart, timestamps, feeds.map(feed => parseFloat(feed.field4)));
+                    updateChart(nitrogenChart, timestamps, feeds.map(feed => parseFloat(feed.field5)));
+                    updateChart(phosphorusChart, timestamps, feeds.map(feed => parseFloat(feed.field6)));
+                    updateChart(potassiumChart, timestamps, feeds.map(feed => parseFloat(feed.field7)));
+                    updateChart(lightChart, timestamps, feeds.map(feed => parseFloat(feed.field8)));
+                }
+            } catch (error) {
+                console.error('Error fetching historical data:', error);
+            }
+        }
+
+        function updateChart(chart, labels, data) {
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = data;
+            chart.update();
+        }
+
+        window.onload = function() {
+            initCharts();
+            fetchCurrentData();
+            fetchHistoricalData();
+            setInterval(() => {
+                fetchCurrentData();  // Fetch real-time data
+                fetchHistoricalData();  // Fetch historical data for mini charts
+            }, 300);  // Refresh every 30 seconds
+        };
+    </script>
+
+</body>
+</html>
