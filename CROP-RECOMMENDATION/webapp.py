@@ -117,7 +117,7 @@ def set_background():
 @st.cache_data
 def load_data():
     try:
-        DATA_PATH = 'Crop_recommendation.csv'
+        DATA_PATH = 'CROP-RECOMMENDATION/Crop_recommendation.csv'
         return pd.read_csv(DATA_PATH)
     except FileNotFoundError:
         # Create a sample dataset if file not found
