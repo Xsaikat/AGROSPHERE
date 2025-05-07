@@ -1,5 +1,0 @@
-streamlit
-pandas
-numpy
-matplotlib
-numpy>=1.25.0
