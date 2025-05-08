@@ -30,7 +30,7 @@ def local_css():
     }
     .stButton>button {
         background-color: #4CAF50;
-        color: white;
+        color: black;
         font-weight: bold;
         border-radius: 8px;
         padding: 10px 24px;
@@ -51,13 +51,16 @@ def local_css():
     }
 
     .success-box {
-        background-color: #e9f7ef;
+        background-color: #000000;
         border-left: 5px solid #4CAF50;
         padding: 15px;
         border-radius: 4px;
         margin: 10px 0;
     }
-    h1, h2, h3 {
+    h1 {
+        color: white;
+    }
+    h2, h3 {
         color: #2e7d32;
     }
     .stSidebar .css-1d391kg {
@@ -86,7 +89,7 @@ def set_background():
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
-        color: white; /* Set default text color */
+        color: yellow; /* Set default text color */
     }
 
 /* Overlay box for content */
@@ -279,23 +282,38 @@ def recommend_fertilizer(nitrogen, phosphorus, potassium, soil_type, crop_type, 
             
         return f"Recommended Fertilizer: {fertilizer}", n_deficiency, p_deficiency, k_deficiency
 
-# Function to show crop image
-def show_crop_image(crop_name):
-    # Create crop_images directory if it doesn't exist
-    if not os.path.exists('crop_images'):
-        os.makedirs('crop_images')
+# # Function to show crop image
+# def show_crop_image(crop_name):
+#     # Create crop_images directory if it doesn't exist
+#     if not os.path.exists('crop_images'):
+#         os.makedirs('crop_images')
         
-    image_path = os.path.join('crop_images', f"{crop_name.lower()}.jpg")
-    placeholder_image = os.path.join('crop_images', 'placeholder.jpg')
+#     image_path = os.path.join('crop_images', f"{crop_name.lower()}.jpg")
+#     placeholder_image = os.path.join('crop_images', 'placeholder.jpg')
     
-    if os.path.exists(image_path):
-        image = Image.open(image_path)
-        return image
-    elif os.path.exists(placeholder_image):
-        image = Image.open(placeholder_image)
-        return image
-    else:
-        return None
+#     if os.path.exists(image_path):
+#         image = Image.open(image_path)
+#         return image
+#     elif os.path.exists(placeholder_image):
+#         image = Image.open(placeholder_image)
+#         return image
+#     else:
+#         return None
+
+# Function to fetch and return an online image silently
+def show_crop_image(crop_name):
+    try:
+        query = crop_name + " crop"
+        url = f"https://source.unsplash.com/600x400/?{query.replace(' ', '%20')}"
+
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            image = Image.open(BytesIO(response.content))
+            return image
+    except:
+        pass  # Silently ignore all errors
+    
+    return None  # Return nothing if failed
 
 # Function to create a radar chart for soil properties
 def create_radar_chart(n, p, k, temp, humidity, rainfall):
@@ -379,8 +397,15 @@ def main():
     # Set background
     set_background()
     
-    # Header
-    st.markdown("<h1 style='text-align: center;'> SMART CROP RECOMMENDATION SYSTEM </h1>", unsafe_allow_html=True)
+    st.markdown("""
+    <h1 style="color: white; text-align: center; 
+               text-shadow: -1px -1px 0 #000, 
+                            1px -1px 0 #000, 
+                            -1px 1px 0 #000, 
+                            1px 1px 0 #000;">
+        SMART CROP RECOMMENDATION SYSTEM
+    </h1>
+""", unsafe_allow_html=True)
     
     # Load data and models
     df = load_data()
@@ -475,7 +500,7 @@ def main():
                         if top_crops[i] != prediction:  # Skip the main prediction
                             confidence = top_probas[i] * 100
                             st.markdown(f"""
-                            <div style='background-color:#f8f9fa; padding:10px; border-radius:5px; margin-bottom:10px;'>
+                            <div style='background-color:#000000; padding:10px; border-radius:5px; margin-bottom:10px;'>
                             <b>{top_crops[i]}</b> - Confidence: {confidence:.1f}%
                             </div>
                             """, unsafe_allow_html=True)
