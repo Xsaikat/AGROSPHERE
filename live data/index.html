@@ -221,15 +221,19 @@
                 const data = await response.json();
                 if (data.feeds && data.feeds.length > 0) {
                     const latest = data.feeds[0];
-                    document.getElementById('soilMoistureValue').textContent = `${parseFloat(latest.field4).toFixed(2)} %`;
+                    
                     document.getElementById('temperatureValue').textContent = `${parseFloat(latest.field1).toFixed(2)} °C`;
                     document.getElementById('humidityValue').textContent = `${parseFloat(latest.field2).toFixed(2)} %`;
-                    document.getElementById('rainfallValue').textContent = `${parseFloat(latest.field8).toFixed(2)} mm`;
+                    document.getElementById('lightValue').textContent = `${parseFloat(latest.field3).toFixed(2)} lux`;
+                    document.getElementById('soilMoistureValue').textContent = `${parseFloat(latest.field4).toFixed(2)} %`;
                     document.getElementById('nitrogenValue').textContent = `${parseFloat(latest.field5).toFixed(2)} mg/L`;
                     document.getElementById('phosphorusValue').textContent = `${parseFloat(latest.field6).toFixed(2)} mg/L`;
                     document.getElementById('potassiumValue').textContent = `${parseFloat(latest.field7).toFixed(2)} mg/L`;
-                    document.getElementById('lightValue').textContent = `${parseFloat(latest.field3).toFixed(2)} lux`;
-                }
+                    document.getElementById('rainfallValue').textContent = `${parseFloat(latest.field8).toFixed(2)} mm`;
+                    
+                   
+                    
+               }
             } catch (error) {
                 console.error('Error fetching current data:', error);
             }
@@ -262,6 +266,12 @@
             chart.update();
         }
 
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * This function initializes charts and fetches current and historical sensor data 
+ * from the ThingSpeak API. It sets an interval to periodically update the data 
+ * every 30 seconds, ensuring real-time updates for the charts displayed on the 
+/*******  ab7a9d75-0980-45f4-96c7-a6e0c0029538  *******/
         window.onload = function() {
             initCharts();
             fetchCurrentData();
