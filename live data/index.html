@@ -97,9 +97,10 @@
                 <canvas id="humidityChart"></canvas>
             </div>
             <div class="chart-container">
-                <h4>Rainfall</h4>
-                <canvas id="rainfallChart"></canvas>
+                <h4>Light</h4>
+                <canvas id="lightChart"></canvas>
             </div>
+            
             <div class="chart-container">
                 <h4>Nitrogen</h4>
                 <canvas id="nitrogenChart"></canvas>
@@ -113,8 +114,8 @@
                 <canvas id="potassiumChart"></canvas>
             </div>
             <div class="chart-container">
-                <h4>Light</h4>
-                <canvas id="lightChart"></canvas>
+                <h4>Rainfall</h4>
+                <canvas id="rainfallChart"></canvas>
             </div>
         </div>
 
@@ -133,9 +134,10 @@
                 <div class="sensor-value" id="humidityValue">Loading...</div>
             </div>
             <div class="sensor-box">
-                <h4>Rainfall</h4>
-                <div class="sensor-value" id="rainfallValue">Loading...</div>
+                <h4>Light</h4>
+                <div class="sensor-value" id="lightValue">Loading...</div>
             </div>
+            
             <div class="sensor-box">
                 <h4>Nitrogen</h4>
                 <div class="sensor-value" id="nitrogenValue">Loading...</div>
@@ -149,8 +151,8 @@
                 <div class="sensor-value" id="potassiumValue">Loading...</div>
             </div>
             <div class="sensor-box">
-                <h4>Light</h4>
-                <div class="sensor-value" id="lightValue">Loading...</div>
+                <h4>Rainfall</h4>
+                <div class="sensor-value" id="rainfallValue">Loading...</div>
             </div>
         </div>
     </div>
@@ -188,9 +190,9 @@
                 data: { labels: [], datasets: [{ label: 'Humidity', data: [], borderColor: 'rgba(153, 102, 255, 1)', borderWidth: 2, fill: false }] },
                 options: chartOptions
             });
-            rainfallChart = new Chart(document.getElementById('rainfallChart'), {
+            lightChart = new Chart(document.getElementById('lightChart'), {
                 type: 'line',
-                data: { labels: [], datasets: [{ label: 'Rainfall', data: [], borderColor: 'rgba(255, 159, 64, 1)', borderWidth: 2, fill: false }] },
+                data: { labels: [], datasets: [{ label: 'Light', data: [], borderColor: 'rgba(255, 206, 86, 1)', borderWidth: 2, fill: false }] },
                 options: chartOptions
             });
             nitrogenChart = new Chart(document.getElementById('nitrogenChart'), {
@@ -208,9 +210,10 @@
                 data: { labels: [], datasets: [{ label: 'Potassium', data: [], borderColor: 'rgba(153, 102, 255, 1)', borderWidth: 2, fill: false }] },
                 options: chartOptions
             });
-            lightChart = new Chart(document.getElementById('lightChart'), {
+            
+            rainfallChart = new Chart(document.getElementById('rainfallChart'), {
                 type: 'line',
-                data: { labels: [], datasets: [{ label: 'Light', data: [], borderColor: 'rgba(255, 206, 86, 1)', borderWidth: 2, fill: false }] },
+                data: { labels: [], datasets: [{ label: 'Rainfall', data: [], borderColor: 'rgba(255, 159, 64, 1)', borderWidth: 2, fill: false }] },
                 options: chartOptions
             });
         }
